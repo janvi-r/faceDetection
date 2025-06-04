@@ -1,1 +1,0 @@
-Student(name=janvi, image=/Users/janvi/hello/Registration/stored-faces/0_1748977001.jpg, attendance=None)
