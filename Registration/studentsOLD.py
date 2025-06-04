@@ -3,7 +3,7 @@ import faceDetection
 dictionary = {}
 
 class Student:    
-    def __init__(self, studentName, studentImage, studentAttendance):
+    def __init__(self,studentName,studentImage,studentAttendance):
         self.studentName = studentName
         self.studentImage = studentImage
         self.studentAttendance = studentAttendance

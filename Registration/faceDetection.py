@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import os
 import time
 
@@ -17,40 +16,42 @@ def detect_and_save_face(frame, face_id):
         cropped_face = frame[y:y+h, x:x+w]
         folder_path = "/Users/janvi/hello/Registration/stored-faces"
         os.makedirs(folder_path, exist_ok=True)
-        file_path = os.path.join(folder_path, f"{face_id}.jpg")
+
+        timestamp = int(time.time())
+        file_path = os.path.join(folder_path, f"{face_id}_{timestamp}.jpg")
         cv2.imwrite(file_path, cropped_face)
         print(f"Saved: {file_path}")
         return file_path
     return False
 
-    #take the file_path and save it to the dictionary for each student
+def capture_face_with_countdown(face_id=0, countdown_seconds=5):
+    cap = cv2.VideoCapture(0)
+    start_time = time.time()
 
-cap = cv2.VideoCapture(0)
-face_id = 0
-start_time = time.time()
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("Failed to capture frame from camera.")
+            break
 
-# Countdown loop (10 seconds)
-while True:
+        elapsed = int(time.time() - start_time)
+        countdown = countdown_seconds - elapsed
+
+        if countdown > 0:
+            cv2.putText(frame, f"Taking photo in: {countdown}s", (50, 400),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
+        cv2.imshow("Face Capture", frame)
+
+        if cv2.waitKey(1) == ord("q") or countdown <= 0:
+            break
+
+    # Capture face after countdown
     ret, frame = cap.read()
-    if not ret:
-        break
+    cap.release()
+    cv2.destroyAllWindows()
 
-    elapsed = int(time.time() - start_time)
-    countdown = 10 - elapsed
-    if countdown > 0:
-        cv2.putText(frame, f"Taking photo in: {countdown}s", (50, 400),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
-    cv2.imshow("Face Capture", frame)
-
-    if cv2.waitKey(1) == ord("q"):
-        break
-    if countdown <= 0:
-        break
-
-# Capture face after countdown
-ret, frame = cap.read()
-if ret:
-    detect_and_save_face(frame, face_id)
-
-cap.release()
-cv2.destroyAllWindows()
+    if ret:
+        return detect_and_save_face(frame, face_id)
+    else:
+        print("No frame captured to save face.")
+        return False

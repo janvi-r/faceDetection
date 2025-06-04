@@ -1,0 +1,4 @@
+Student(name=janvi-2, image=/Users/janvi/hello/Registration/stored-faces/0_1749005502.jpg, attendance=None)
+Student(name=janvi, image=/Users/janvi/hello/Registration/stored-faces/0_1749005524.jpg, attendance=None)
+Student(name=ila, image=/Users/janvi/hello/Registration/stored-faces/0_1749005572.jpg, attendance=None)
+Student(name=ila-2, image=/Users/janvi/hello/Registration/stored-faces/0_1749005609.jpg, attendance=None)
