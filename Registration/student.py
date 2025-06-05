@@ -40,6 +40,7 @@ def intro():
                #print(db["/Users/janvi/hello/Registration/stored-faces/0_1749061249.jpg"].getstudentName())
      db.close()
 
+
 #   with open('classList.txt', 'w') as file:
 # # #     file.write(name + '\n')
     
