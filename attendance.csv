@@ -1,4 +1,4 @@
-
-T,r,u,e
-2,0,2,5,-,0,6,-,0,6, ,1,2,:,1,4,:,1,6
-
+name,attendance_today,attendance_timestamp,total_attendance
+janvi,False,,0
+dhvanay,False,,0
+rud,True,0,1

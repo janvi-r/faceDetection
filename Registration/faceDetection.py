@@ -4,24 +4,35 @@ import csv
 import threading
 import cv2
 from deepface import DeepFace
-import pandas as pd
+#import pandas as pd
 
 match_found = False
 matched_filename = None
 
 def mark_attendance(name, attendance):
     print("in mark_attendance")
-    with open("attendance.csv") as file:
-        df = pd.read_csv("attendance.csv")  
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == name:
-                print("Found the row:", row)
-               # row[1] = attendance
+
+    with open("attendance.csv", newline='') as file:
+        #dictreader better to use because the other one was being weird when reading the file
+        reader = csv.DictReader(file)
+        rows = list(reader)
+    
+    for row in rows:
+        if row["name"] == name:
+            print("Found the row:", row)
+            row["attendance_today"] = str(attendance)
+            row["attendance_timestamp"] = 0 #idk how to do the time stamp 
+            row["total_attendance"] = str(int(row["total_attendance"]) + 1)
+    
+    #rewrites all the new data, i didn't know how else to do it. 
+    with open("attendance.csv", "w", newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["name", "attendance_today", "attendance_timestamp", "total_attendance"])
+        writer.writeheader()
+        writer.writerows(rows)
               #  print(row[1])
-                df["attendance"] = df["attendance"].replace(False, True)
+               # df["attendance"] = df["attendance"].replace(False, True)
                 
-               # row[1] = row[1].replace("False", "True")
+              #a row[1] = row[1].replace("False", "True")
 
 
     # line_number = 0
