@@ -5,33 +5,33 @@ import os
 import shelve
 import sys
 
-def everything():
+def everything(self):
     counter = 0
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    self.cap = cv2.VideoCapture(0)
+    self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     
     folder_path = "Dataset"
 
-    reference_images = []
+    self.reference_images = []
     for foldername, subfolders, filenames in os.walk(folder_path):
         for filename in filenames:
             if filename.lower().endswith(('.jpg', '.png')):
                 img_path = os.path.join(foldername, filename)
                 img = cv2.imread(img_path)
                 if img is not None:
-                    reference_images.append((img, filename))  
+                    self.reference_images.append((img, filename))  
 
     match_found = False
     matched_filename = None
 
     while True:
-        ret, frame = cap.read()
+        ret, frame = self.cap.read()
         if not ret:
             break
         if counter % 30 == 0 and not match_found:
             try:
-                threading.Thread(target=check_face, args=(frame.copy(), reference_images)).start()
+                threading.Thread(target=check_face, args=(frame.copy(), self.reference_images)).start()
             except Exception as e:
                 print("Thread error:", e)
 

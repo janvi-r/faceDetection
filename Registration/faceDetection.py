@@ -4,7 +4,8 @@ import csv
 import threading
 import cv2
 from deepface import DeepFace
-#import pandas as pd
+import tkinter as tk
+import customtkinter
 
 match_found = False
 matched_filename = None
@@ -29,31 +30,6 @@ def mark_attendance(name, attendance):
         writer = csv.DictWriter(file, fieldnames=["name", "attendance_today", "attendance_timestamp", "total_attendance"])
         writer.writeheader()
         writer.writerows(rows)
-              #  print(row[1])
-               # df["attendance"] = df["attendance"].replace(False, True)
-                
-              #a row[1] = row[1].replace("False", "True")
-
-
-    # line_number = 0
-    # found_line = None
-
-    # with open('attendance.csv', newline='') as csvfile:
-    #     reader = csv.reader(csvfile)
-    #     for i, row in enumerate(reader, start=1):
-    #         if name in row:
-    #             line_number = i
-    #             found_line = row
-    #             break
-    # if found_line:
-    #     csvFile = pd.read_csv("attendance.csv")
-    #     csvFile.loc[line_number, 'attendance_today'] = attendance
-    #     csvFile.loc[line_number, 'total_attendance'] += 1
-    #     csvFile.loc[line_number, 'attendance_timestamp'] = time.strftime("%Y-%m-%d %H:%M:%S")
-
-    #     csvFile.to_csv("attendance.csv", index=False)
-    # else:
-    #     print(f"this should never happen - replace later lol")
 
 def everything():
     global match_found, matched_filename
@@ -93,7 +69,6 @@ def everything():
             if matched_filename:
                 print(f"Matched with: {matched_filename}")
                 name = matched_filename[:matched_filename.find("_")]
-               # print(name)
                 mark_attendance(name, True)
                 break
         else:
@@ -127,16 +102,6 @@ def check_face(frame, reference_images):
         match_found = False
         matched_filename = None
         print("Error during face verification:", e)
-    # try:
-    #     for ref_img, filename in reference_images:
-    #         result = DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)
-    #         print(f"Comparing with {filename}: {result['verified']}")
-    #         if result['verified']:
-    #             match_found = True
-    #             matched_filename = filename
-    #             break
-    # except Exception as e:
-    #     print("Error:", e)
 
 
 face_classifier = cv2.CascadeClassifier("Registration/haarcascade_frontalface_default.xml")
@@ -206,38 +171,77 @@ def capture_face_with_countdown(folder_path, name, face_id=0, countdown_seconds=
         print("No frame captured to save face.")
         return False
 
-def main():
-#     name = input("Enter your name: ")
-#     folder_path = create_dataset(name)
-#     print("Dataset created successfully.")
-#     capture_face_with_countdown(folder_path, name, face_id=0, countdown_seconds=5)
+def create(name):
+    folder_path = create_dataset(name)
+    print("Dataset created successfully.")
+    capture_face_with_countdown(folder_path, name, face_id=0, countdown_seconds=5)
 
-#     data = {
-#         'name': name,
-#         'attendance_today': False,
-#         'attendance_timestamp': None,
-#         'total_attendance': 0
-#     }
+    data = {
+        'name': name,
+        'attendance_today': False,
+        'attendance_timestamp': None,
+        'total_attendance': 0
+    }
 
-#     file_path = "attendance.csv"
+    file_path = "attendance.csv"
 
-# # Check if the file already exists and is non-empty
-#     write_header = not os.path.exists(file_path) or os.path.getsize(file_path) == 0
+# Check if the file already exists and is non-empty
+    write_header = not os.path.exists(file_path) or os.path.getsize(file_path) == 0
 
-#     with open(file_path, "a", newline="") as file:
-#         fieldnames = ['name', 'attendance_today', 'attendance_timestamp', 'total_attendance']
-#         writer = csv.DictWriter(file, fieldnames=fieldnames)
+    with open(file_path, "a", newline="") as file:
+        fieldnames = ['name', 'attendance_today', 'attendance_timestamp', 'total_attendance']
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
 
-#         if write_header:
-#             writer.writeheader()  # Write header only if file is new or empty
+        if write_header:
+            writer.writeheader()  # Write header only if file is new or empty
 
-#         writer.writerow(data)     # Write the actual data row
- 
+        print("Data to be written:", data)
+
+        writer.writerow(data)     # Write the actual data row
 
 
-    everything()
 
-main()
+class Registration:
+    def __init__(self, master):
+        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_default_color_theme("dark-blue")
+
+        self.master = master
+        self.master.title("Registration")
+        self.master.geometry("500x250")
+
+        self.frame = customtkinter.CTkFrame(master=self.master)
+        self.frame.pack(pady=20, padx=60, fill="both", expand=True)
+
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Registration", font=("Arial", 24))
+        self.label.pack(pady=12, padx=10)
+
+        self.entry1 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Enter Your Name")
+        self.entry1.pack(pady=12, padx=10)
+
+        self.checkbox = customtkinter.CTkCheckBox(master=self.frame, text="Already Have an Account? Login In", command=self.login)
+        self.checkbox.pack(pady=12, padx=10)
+
+        self.button = customtkinter.CTkButton(master=self.frame, text="Next", command=self.register)
+        self.button.pack(pady=12, padx=10)
+
+    def register(self):
+        user_name = self.entry1.get()
+        # Save to database or perform registration logic here
+        print(f"Registered user: {user_name}")
+        create(user_name)
+
+    def login(self):
+        print("Placeholder for login functionality")
+        everything()
+
+
+#Create main window and run
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = Registration(root)
+    root.mainloop()
+
 
 
     # cap = cv2.VideoCapture(0)
